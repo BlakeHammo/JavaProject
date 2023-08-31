@@ -1,5 +1,15 @@
 import java.util.*;
 
+//state class, each state needs transition table
+class State {
+    Set<State> transitions = new HashSet<>();
+    char label;
+
+    public State(char label) {
+        this.label = label;
+    }
+}
+
 class RegexParser {
     private String input;
     private int index;
@@ -37,12 +47,11 @@ public class RegexEngine {
                 break;
             }
             System.out.println("Ready");
-
             RegexParser parser = new RegexParser(regex);
-            List<Character> components = parser.parse();
-
-            System.out.println("Components: " + components);
-            
+            while(scanner.hasNextLine()) {
+                String testCase = scanner.nextLine();
+                //here I can test each input to the parsed regular expression
+            }
         }
     }
 }
