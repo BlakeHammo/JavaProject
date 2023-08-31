@@ -10,6 +10,40 @@ class State {
     }
 }
 
+//will need a transition class too
+class Transition {
+    State sourceState;
+    State targState;
+    char inputChar;
+
+}
+
+/*alot of thinking about states and transitions from a parsed regular expression
+I'll need a start state, and then a state for each character, plus an extra for kleene star, and a final accepting state
+
+eg "ab"
+From start, epsilon transition to first state
+from first state transition on 'a' to second state
+from second state transition on 'b' to third state
+from third state transition on epsilon to accepting state
+
+eg ab*c
+From start, epsilon transition to first state
+from first state transition on 'a' to second state
+from second state transition on 'b' to third state
+from third state transition on epsilon back to second state
+from second state transition on 'c' to fourth state
+from fourth state transition on epsilon to accepting state
+
+eg ab+
+from start, epsilon transition to first state
+from first, transition on 'a' to second state
+from second, transition on 'b' to third state
+from third, transition on 'b' to third state
+from third, transition on epsilon to accepting state
+
+
+*/
 class RegexParser {
     private String input;
     private int index;
