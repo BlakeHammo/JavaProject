@@ -27,32 +27,7 @@ class Transition {
     }
 }
 
-/*alot of thinking about states and transitions from a parsed regular expression
-I'll need a start state, and then a state for each character, plus an extra for kleene star, and a final accepting state
 
-eg "ab"
-From start, epsilon transition to first state
-from first state transition on 'a' to second state
-from second state transition on 'b' to third state
-from third state transition on epsilon to accepting state
-
-eg ab*c
-From start, epsilon transition to first state
-from first state transition on 'a' to second state
-from second state transition on 'b' to third state
-from third state transition on epsilon back to second state
-from second state transition on 'c' to fourth state
-from fourth state transition on epsilon to accepting state
-
-eg ab+
-from start, epsilon transition to first state
-from first, transition on 'a' to second state
-from second, transition on 'b' to third state
-from third, transition on 'b' to third state
-from third, transition on epsilon to accepting state
-
-
-*/
 class RegexParser {
     private String input;
     private int index;
@@ -84,6 +59,7 @@ public class RegexEngine {
         State current = start;
 
         //iterate through the regex input, creating states and simple transition for each
+        //only for characters, no operators so far
         for (int i = 0; i < input.size(); i++) {
             char c = input.get(i);
     
@@ -94,9 +70,30 @@ public class RegexEngine {
 
         //once end of expression is reached, add one last transition to accepting state
         State accept = new State('A');
-        current.addTransition(accept, 'E');
+        current.addTransition(accept, 'ε');
 
         return start;
+    }
+
+    //Epsilon Closure for each state
+    public static Set<State> epsilonClosure(State state) {
+        Set<State> closure = new HashSet<>();
+        epsilonClosureHelper(state, closure);
+        return closure;
+    }
+
+    private static void epsilonClosureHelper(State state, Set<State> closure) {
+        if (!closure.contains(state)) {
+            closure.add(state);
+            
+            //iterate over transitions of current state, if there is an epsilon transition
+            //recursive call and check the transitions of that state
+            for (Transition transition : state.transitions) {
+                if (transition.inputChar == 'ε') {
+                    epsilonClosureHelper(transition.targetState, closure);
+                }
+            }
+        }
     }
 
 
