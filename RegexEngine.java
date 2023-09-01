@@ -2,20 +2,29 @@ import java.util.*;
 
 //state class, each state needs transition table
 class State {
-    Set<State> transitions = new HashSet<>();
+    Set<Transition> transitions = new HashSet<>();
     char label;
 
     public State(char label) {
         this.label = label;
+    }
+
+    public void addTransition(State targetState, char inputChar) {
+        transitions.add(new Transition(this, targetState, inputChar));
     }
 }
 
 //will need a transition class too
 class Transition {
     State sourceState;
-    State targState;
+    State targetState;
     char inputChar;
 
+    public Transition(State sourceState, State targetState, char inputChar) {
+        this.sourceState = sourceState;
+        this.targetState = targetState;
+        this.inputChar = inputChar;
+    }
 }
 
 /*alot of thinking about states and transitions from a parsed regular expression
@@ -69,6 +78,29 @@ class RegexParser {
 }
 
 public class RegexEngine {
+
+    public static State buildNFA(List<Character> input) {
+        State start = new State('S'); //start state
+        State current = start;
+
+        //iterate through the regex input, creating states and simple transition for each
+        for (int i = 0; i < input.size(); i++) {
+            char c = input.get(i);
+    
+            State newState = new State(c);
+            current.addTransition(newState, c);
+            current = newState;
+        }
+
+        //once end of expression is reached, add one last transition to accepting state
+        State accept = new State('A');
+        current.addTransition(accept, 'E');
+
+        return start;
+    }
+
+
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -80,11 +112,23 @@ public class RegexEngine {
                 System.out.println("Error");
                 break;
             }
-            System.out.println("Ready");
+
+
             RegexParser parser = new RegexParser(regex);
+            List<Character> input = parser.parse();
+
+
+            
+            //Build the NFA for the 
+            State startState = buildNFA(input);
+
+
+
+            System.out.println("Ready");
             while(scanner.hasNextLine()) {
                 String testCase = scanner.nextLine();
                 //here I can test each input to the parsed regular expression
+                //need to create a match function
             }
         }
     }
