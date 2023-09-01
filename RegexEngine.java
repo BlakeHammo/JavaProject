@@ -97,6 +97,37 @@ public class RegexEngine {
     }
 
 
+    //matching method
+    public static boolean match(State start, String input) {
+        //epsilon closure of initial state
+        Set<State> currentStates = epsilonClosure(start);
+
+        for (char c : input.toCharArray()) {
+            Set<State> newStates = new HashSet<>();
+
+            for (State state : currentStates) {
+                //check each transition from current state
+                for (Transition transition : state.transitions) {
+                    //if the transition input matches the current input character,
+                    //the epsilon closure of the target state to the new states is added
+                    if (transition.inputChar == c) {
+                        newStates.addAll(epsilonClosure(transition.targetState));
+                    }
+                }
+            }
+
+            currentStates = newStates;
+        }
+        // Check if any of the final states in the current set of states are accepting states
+        for (State state : currentStates) {
+            if (state.label == 'A') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -124,6 +155,9 @@ public class RegexEngine {
             System.out.println("Ready");
             while(scanner.hasNextLine()) {
                 String testCase = scanner.nextLine();
+                boolean isMatch = match(startState, testCase);
+                System.out.println(isMatch);
+
                 //here I can test each input to the parsed regular expression
                 //need to create a match function
             }
