@@ -61,7 +61,10 @@ public class RegexEngine {
         State openBracket = start;
         State bracketTemp = new State('T');
 
+        char previousChar = 'S';
+
         boolean bracketFlag = false;
+        boolean insideBrackets = false;
         boolean alternatorFlag = false;
 
         State accept = new State('A');
@@ -71,7 +74,12 @@ public class RegexEngine {
     
             //kleene star
             if (c == '*') {
-                if (bracketFlag) {
+                if (insideBrackets) {
+                    current.addTransition(previous, 'ε');
+                    current = previous;
+                }
+                
+                else if (bracketFlag) {
                     current.addTransition(openBracket, 'ε');
                     current = openBracket;
                     bracketFlag = false;
@@ -85,6 +93,7 @@ public class RegexEngine {
             //kleene plus
             else if (c == '+') {
                 if (bracketFlag) {
+                    current.addTransition(openBracket, 'ε');
                     bracketFlag = false;
                 }
                 else {
@@ -94,9 +103,11 @@ public class RegexEngine {
 
             //alternation operator
             else if (c == '|') {
-                if (bracketFlag) {
+                if (insideBrackets) {
                     current.addTransition(bracketTemp, 'ε');
                     current = openBracket;
+                    State newState = new State(c);
+                    current.addTransition(newState, 'ε');
                     alternatorFlag = true;
 
                 }
@@ -109,6 +120,7 @@ public class RegexEngine {
             else if (c == '(') {
                 openBracket = current;
                 bracketFlag = true;
+                insideBrackets = true;
             }
 
             else if (c == ')') {
@@ -116,9 +128,11 @@ public class RegexEngine {
                     current.addTransition(bracketTemp, 'ε');
                     current = bracketTemp;
                     alternatorFlag = false;
+                    insideBrackets = false;
                 }
                 else {
                     current.addTransition(openBracket, 'ε');
+                    insideBrackets = false;
                 }
 
 
@@ -129,7 +143,7 @@ public class RegexEngine {
             current.addTransition(newState, c);
             previous = current;
             current = newState;
-          
+            previousChar = c;
   
             }
 
