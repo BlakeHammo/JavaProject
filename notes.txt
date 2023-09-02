@@ -22,3 +22,13 @@ from first, transition on 'a' to second state
 from second, transition on 'b' to third state
 from third, transition on 'b' to third state
 from third, transition on epsilon to accepting state
+
+
+
+        //iterate through the regex input, creating states and simple transition for each
+        //only for characters, no operators so far
+        //operators are * + | ( )
+
+        //open bracket, save current state
+        //close bracket, previous state equal to open bracket state
+        //change kleene star and plus functions if bracket state not equal to start state
