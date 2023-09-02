@@ -92,7 +92,11 @@ public class RegexEngine {
 
             //kleene plus
             else if (c == '+') {
-                if (bracketFlag) {
+                if (insideBrackets) {
+                    current.addTransition(previous, 'ε');
+                }
+                
+                else if (bracketFlag) {
                     current.addTransition(openBracket, 'ε');
                     bracketFlag = false;
                 }
@@ -108,6 +112,8 @@ public class RegexEngine {
                     current = openBracket;
                     State newState = new State(c);
                     current.addTransition(newState, 'ε');
+                    previous = current;
+                    current = newState;
                     alternatorFlag = true;
 
                 }
