@@ -124,7 +124,9 @@ public class RegexEngine {
             }
 
             else if (c == '(') {
-                openBracket = current;
+                State newState = new State(c);
+                current.addTransition(newState, 'ε');
+                openBracket = newState;
                 bracketFlag = true;
                 insideBrackets = true;
             }
