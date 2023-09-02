@@ -59,7 +59,7 @@ public class RegexEngine {
         State current = start;
         State previous = start;
         State openBracket = start;
-        State bracketTemp = start;
+        State bracketTemp = new State('T');
 
         boolean bracketFlag = false;
         boolean alternatorFlag = false;
@@ -72,8 +72,9 @@ public class RegexEngine {
             //kleene star
             if (c == '*') {
                 if (bracketFlag) {
-                current = openBracket;
-                bracketFlag = false;
+                    current.addTransition(openBracket, 'ε');
+                    current = openBracket;
+                    bracketFlag = false;
                 }
                 else {
                 current.addTransition(previous, 'ε');
@@ -94,7 +95,6 @@ public class RegexEngine {
             //alternation operator
             else if (c == '|') {
                 if (bracketFlag) {
-                    bracketTemp = new State(c);
                     current.addTransition(bracketTemp, 'ε');
                     current = openBracket;
                     alternatorFlag = true;
@@ -120,6 +120,8 @@ public class RegexEngine {
                 else {
                     current.addTransition(openBracket, 'ε');
                 }
+
+
             }
 
             else {
