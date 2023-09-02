@@ -58,15 +58,32 @@ public class RegexEngine {
         State start = new State('S'); //start state
         State current = start;
         State previous = start;
+        char previousChar = 'S';
+
+        State accept = new State('A');
+
+
         //iterate through the regex input, creating states and simple transition for each
         //only for characters, no operators so far
         //operators are * + | ( )
         for (int i = 0; i < input.size(); i++) {
             char c = input.get(i);
     
+            //kleene star
             if (c == '*') {
                 current.addTransition(previous, 'ε');
                 current = previous;
+            }
+
+            //kleene plus
+            else if (c == '+') {
+                current.addTransition(current, previousChar);
+            }
+
+            //alternation operator
+            else if (c == '|') {
+                current.addTransition(accept, 'ε');
+                current = start;
             }
 
             else {
@@ -74,13 +91,13 @@ public class RegexEngine {
             current.addTransition(newState, c);
             previous = current;
             current = newState;
+            previousChar = c;
   
             }
 
         }
 
         //once end of expression is reached, add one last transition to accepting state
-        State accept = new State('A');
         current.addTransition(accept, 'ε');
 
         return start;
