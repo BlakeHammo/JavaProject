@@ -59,9 +59,10 @@ public class RegexEngine {
         State current = start;
         State previous = start;
         State openBracket = start;
-        char previousChar = 'S';
+        State bracketTemp = start;
 
         boolean bracketFlag = false;
+        boolean alternatorFlag = false;
 
         State accept = new State('A');
 
@@ -82,22 +83,43 @@ public class RegexEngine {
 
             //kleene plus
             else if (c == '+') {
-                current.addTransition(current, previousChar);
+                if (bracketFlag) {
+                    bracketFlag = false;
+                }
+                else {
+                current.addTransition(previous, 'ε');
+                }
             }
 
             //alternation operator
             else if (c == '|') {
-                current.addTransition(accept, 'ε');
-                current = start;
+                if (bracketFlag) {
+                    bracketTemp = new State(c);
+                    current.addTransition(bracketTemp, 'ε');
+                    current = openBracket;
+                    alternatorFlag = true;
+
+                }
+                else {
+                    current.addTransition(accept, 'ε');
+                    current = start;
+                }
             }
 
             else if (c == '(') {
                 openBracket = current;
+                bracketFlag = true;
             }
 
             else if (c == ')') {
-                current.addTransition(openBracket, 'ε');
-                bracketFlag = true;
+                if (alternatorFlag) {
+                    current.addTransition(bracketTemp, 'ε');
+                    current = bracketTemp;
+                    alternatorFlag = false;
+                }
+                else {
+                    current.addTransition(openBracket, 'ε');
+                }
             }
 
             else {
@@ -105,7 +127,7 @@ public class RegexEngine {
             current.addTransition(newState, c);
             previous = current;
             current = newState;
-            previousChar = c;
+          
   
             }
 
