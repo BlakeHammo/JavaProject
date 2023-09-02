@@ -127,6 +127,7 @@ public class RegexEngine {
                 State newState = new State(c);
                 current.addTransition(newState, 'ε');
                 openBracket = newState;
+                current = newState;
                 bracketFlag = true;
                 insideBrackets = true;
             }
