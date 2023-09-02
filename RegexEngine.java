@@ -58,6 +58,7 @@ public class RegexEngine {
         State start = new State('S'); //start state
         State current = start;
         State previous = start;
+        State openBracket = start;
         char previousChar = 'S';
 
         State accept = new State('A');
@@ -66,6 +67,11 @@ public class RegexEngine {
         //iterate through the regex input, creating states and simple transition for each
         //only for characters, no operators so far
         //operators are * + | ( )
+
+        //open bracket, save current state
+        //close bracket, previous state equal to open bracket state
+        //change kleene star and plus functions if bracket state not equal to start state
+
         for (int i = 0; i < input.size(); i++) {
             char c = input.get(i);
     
@@ -84,6 +90,14 @@ public class RegexEngine {
             else if (c == '|') {
                 current.addTransition(accept, 'ε');
                 current = start;
+            }
+
+            else if (c == '(') {
+                openBracket = current;
+            }
+
+            else if (c == ')') {
+
             }
 
             else {
