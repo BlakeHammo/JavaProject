@@ -57,15 +57,26 @@ public class RegexEngine {
     public static State buildNFA(List<Character> input) {
         State start = new State('S'); //start state
         State current = start;
-
+        State previous = start;
         //iterate through the regex input, creating states and simple transition for each
         //only for characters, no operators so far
+        //operators are * + | ( )
         for (int i = 0; i < input.size(); i++) {
             char c = input.get(i);
     
+            if (c == '*') {
+                current.addTransition(previous, 'ε');
+                current = previous;
+            }
+
+            else {
             State newState = new State(c);
             current.addTransition(newState, c);
+            previous = current;
             current = newState;
+  
+            }
+
         }
 
         //once end of expression is reached, add one last transition to accepting state
