@@ -307,8 +307,12 @@ public class RegexEngine {
             //if verboseMode is flagged, print transition table of NFA
             if (verboseMode) {
                 printTransitionTable(startState);
-                
-
+                String testCase = "";
+                boolean isMatch = match(startState, testCase);
+                while(scanner.hasNextLine()) {
+                    testCase = testCase + scanner.nextLine();
+                    isMatch = match(startState, testCase);
+                    System.out.println(isMatch);
             }
             //if verboseMode is flagged, 
 
