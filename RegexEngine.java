@@ -280,7 +280,7 @@ public class RegexEngine {
     
 
     public static void main(String[] args) {
-        boolean verboseMode = true;
+        boolean verboseMode = false;
         
         // Check if the '-v' option is provided
         if (args.length > 0 && args[0].equals("-v")) {
