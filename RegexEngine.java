@@ -303,12 +303,14 @@ public class RegexEngine {
 
             //Build the NFA for the input
             State startState = buildNFA(input);
-
+            
+            Boolean isMatch = false;
+            String testCase = "";
             //if verboseMode is flagged, print transition table of NFA
             if (verboseMode) {
                 printTransitionTable(startState);
-                String testCase = "";
-                boolean isMatch = match(startState, testCase);
+                isMatch = match(startState, testCase);
+                System.out.println(isMatch);
                 while(scanner.hasNextLine()) {
                     testCase = testCase + scanner.nextLine();
                     isMatch = match(startState, testCase);
@@ -318,9 +320,10 @@ public class RegexEngine {
 
             System.out.println("Ready");
             while(scanner.hasNextLine()) {
-                String testCase = scanner.nextLine();
-                boolean isMatch = match(startState, testCase);
+                testCase = scanner.nextLine();
+                isMatch = match(startState, testCase);
                 System.out.println(isMatch);
+            }
             }
         }
     }
