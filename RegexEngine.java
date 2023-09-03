@@ -59,7 +59,7 @@ public class RegexEngine {
         boolean bracketFlag = false;
         boolean insideBrackets = false;
         boolean alternatorFlag = false;
-        State accept = new State('A');
+        State accept = new State('Δ');
 
         for (int i = 0; i < input.size(); i++) {
             char c = input.get(i);
@@ -123,6 +123,7 @@ public class RegexEngine {
                 if (alternatorFlag) {
                     current.addTransition(bracketTemp, 'ε');
                     current = bracketTemp;
+                    bracketTemp = new State('T');
                     alternatorFlag = false;
                     insideBrackets = false;
                 }
@@ -191,7 +192,7 @@ public class RegexEngine {
         }
         // Check if any of the final states in the current set of states are accepting states
         for (State state : currentStates) {
-            if (state.label == 'A') {
+            if (state.label == 'Δ') {
                 return true;
             }
         }
