@@ -106,6 +106,7 @@ public class RegexEngine {
             }
 
             //alternation operator
+            //need to keep track of next char, loop back to previous or something to only alternate between the two characters around the | operator
             else if (c == '|') {
                 if (insideBrackets) {
                     current.addTransition(bracketTemp, 'ε');
