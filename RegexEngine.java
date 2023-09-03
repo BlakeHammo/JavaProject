@@ -1,6 +1,5 @@
 import java.util.*;
 
-//state class, each state needs transition table
 class State {
     Set<Transition> transitions = new HashSet<>();
     char label;
@@ -14,7 +13,6 @@ class State {
     }
 }
 
-//will need a transition class too
 class Transition {
     State sourceState;
     State targetState;
@@ -27,7 +25,6 @@ class Transition {
     }
 }
 
-
 class RegexParser {
     private String input;
     private int index;
@@ -39,11 +36,10 @@ class RegexParser {
 
     public List<Character> parse() {
         List<Character> components = new ArrayList<>();
-        
+    
         //add each character of the regular epression to a list
         while (index < input.length()) {
             char currentChar = input.charAt(index);
-            
             components.add(currentChar);
             index++;
         }
@@ -60,13 +56,9 @@ public class RegexEngine {
         State previous = start;
         State openBracket = start;
         State bracketTemp = new State('T');
-
-        char previousChar = 'S';
-
         boolean bracketFlag = false;
         boolean insideBrackets = false;
         boolean alternatorFlag = false;
-
         State accept = new State('A');
 
         for (int i = 0; i < input.size(); i++) {
@@ -77,25 +69,22 @@ public class RegexEngine {
                 if (insideBrackets) {
                     current.addTransition(previous, 'ε');
                     current = previous;
-                }
-                
+                } 
                 else if (bracketFlag) {
                     current.addTransition(openBracket, 'ε');
                     current = openBracket;
                     bracketFlag = false;
-                }
+                } 
                 else {
                 current.addTransition(previous, 'ε');
                 current = previous;
                 }
             }
-
             //kleene plus
             else if (c == '+') {
                 if (insideBrackets) {
                     current.addTransition(previous, 'ε');
                 }
-                
                 else if (bracketFlag) {
                     current.addTransition(openBracket, 'ε');
                     bracketFlag = false;
@@ -104,7 +93,6 @@ public class RegexEngine {
                 current.addTransition(previous, 'ε');
                 }
             }
-
             //alternation operator
             //need to keep track of next char, loop back to previous or something to only alternate between the two characters around the | operator
             else if (c == '|') {
@@ -123,7 +111,6 @@ public class RegexEngine {
                     current = start;
                 }
             }
-
             else if (c == '(') {
                 State newState = new State(c);
                 current.addTransition(newState, 'ε');
@@ -132,7 +119,6 @@ public class RegexEngine {
                 bracketFlag = true;
                 insideBrackets = true;
             }
-
             else if (c == ')') {
                 if (alternatorFlag) {
                     current.addTransition(bracketTemp, 'ε');
@@ -147,18 +133,14 @@ public class RegexEngine {
 
 
             }
-
             else {
             State newState = new State(c);
             current.addTransition(newState, c);
             previous = current;
-            current = newState;
-            previousChar = c;
-  
+            current = newState;  
             }
 
         }
-
         //once end of expression is reached, add one last transition to accepting state
         current.addTransition(accept, 'ε');
 
@@ -185,7 +167,6 @@ public class RegexEngine {
             }
         }
     }
-
 
     //matching method
     public static boolean match(State start, String input) {
@@ -231,25 +212,17 @@ public class RegexEngine {
                 break;
             }
 
-
             RegexParser parser = new RegexParser(regex);
             List<Character> input = parser.parse();
 
-
-            
-            //Build the NFA for the 
+            //Build the NFA for the input
             State startState = buildNFA(input);
-
-
 
             System.out.println("Ready");
             while(scanner.hasNextLine()) {
                 String testCase = scanner.nextLine();
                 boolean isMatch = match(startState, testCase);
                 System.out.println(isMatch);
-
-                //here I can test each input to the parsed regular expression
-                //need to create a match function
             }
         }
     }
