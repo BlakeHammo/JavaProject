@@ -315,16 +315,19 @@ public class RegexEngine {
                     testCase = testCase + scanner.nextLine();
                     isMatch = match(startState, testCase);
                     System.out.println(isMatch);
-            }
-            //if verboseMode is flagged, 
-
-            System.out.println("Ready");
-            while(scanner.hasNextLine()) {
+                } 
+            } 
+            else {
+                System.out.println("Ready");
+                while(scanner.hasNextLine()) {
                 testCase = scanner.nextLine();
                 isMatch = match(startState, testCase);
                 System.out.println(isMatch);
             }
+            //if verboseMode is flagged, 
+
+            
+            }
             }
         }
     }
-}
