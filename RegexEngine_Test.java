@@ -260,5 +260,37 @@ public class RegexEngine_Test {
 
     }
 
+    @Test
+    public void Complex_Test() {
+        RegexEngine regexEngine = new RegexEngine();
+        RegexParser parser = new RegexParser("(a|b)*cd+(e*f)*|g*");
+        List<Character> input = parser.parse();
+        State startState = regexEngine.buildNFA(input);
+        boolean case1 = RegexEngine.match(startState, "");
+        boolean case2 = RegexEngine.match(startState, "abbbacdg");
+        boolean case3 = RegexEngine.match(startState, "abbbacd");
+        boolean case4 = RegexEngine.match(startState, "cdfefefe");
+        boolean case5 = RegexEngine.match(startState, "cd");
+        boolean case6 = RegexEngine.match(startState, "cdddddg");
+        boolean case7 = RegexEngine.match(startState, "cdef");
+        boolean case8 = RegexEngine.match(startState, "abcdef");
+        boolean case9 = RegexEngine.match(startState, "cddfe");
+        boolean case10 = RegexEngine.match(startState, "ggggg");
+        boolean case11= RegexEngine.match(startState, "acddd");
+
+        Assert.assertEquals(case1, true);
+        Assert.assertEquals(case2, false);
+        Assert.assertEquals(case3, true);
+        Assert.assertEquals(case4, true);
+        Assert.assertEquals(case5,true);
+        Assert.assertEquals(case6,false);
+        Assert.assertEquals(case7,true);
+        Assert.assertEquals(case8,true);
+        Assert.assertEquals(case9,true);
+        Assert.assertEquals(case10,true);
+        Assert.assertEquals(case11,true);
+
+    }
+
 }
 
