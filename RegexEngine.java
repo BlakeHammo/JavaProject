@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 class State {
     Set<Transition> transitions = new HashSet<>();
@@ -200,8 +201,92 @@ public class RegexEngine {
         return false;
     }
 
+    public static Set<State> getAllStates(State start) {
+        // Create a set to store all states reachable from the start state
+        Set<State> allStates = new HashSet<>();
+        Queue<State> queue = new LinkedList<>();
+    
+        queue.add(start);
+    
+        while (!queue.isEmpty()) {
+            State state = queue.poll();
+            allStates.add(state);
+    
+            for (Transition transition : state.transitions) {
+                State targetState = transition.targetState;
+                if (!allStates.contains(targetState)) {
+                    queue.add(targetState);
+                }
+            }
+        }
+    
+        return allStates;
+    }
+    
+    public static List<Character> getAllPossibleTransitions(State start) {
+        Set<Character> transitionSet = new HashSet<>();
+    
+        // Iterate through all states in the NFA
+        for (State state : getAllStates(start)) {
+            // Iterate through transitions of the current state
+            for (Transition transition : state.transitions) {
+                char inputChar = transition.inputChar;
+                // Check if it's a non-epsilon transition and add it to the set
+                if (inputChar != 'ε') {
+                    transitionSet.add(inputChar);
+                }
+            }
+        }
+        
+        transitionSet.add('ε');
+
+        // Convert the set of unique transitions to a list
+        List<Character> possibleTransitions = new ArrayList<>(transitionSet);
+        
+        
+        return possibleTransitions;
+    }
+    
+
+    public static void printTransitionTable(State start) {
+        Set<State> allStates = getAllStates(start);
+        List<Character> possibleTransitions = getAllPossibleTransitions(start);
+
+        // Create a table header
+        System.out.print("\t");
+        for (char c : possibleTransitions) {
+            System.out.print(c + "\t");
+        }
+        System.out.println();
+
+        // Print the transition table
+        for (State state : allStates) {
+            System.out.print(state.label + "\t");
+            for (char c : possibleTransitions) {
+                Set<State> targetStates = new HashSet<>();
+                for (Transition transition : state.transitions) {
+                    if (transition.inputChar == c) {
+                        targetStates.add(transition.targetState);
+                    }
+                }
+                String targetStateLabels = targetStates.stream()
+                        .map(targetState -> String.valueOf(targetState.label))
+                        .collect(Collectors.joining(", "));
+                System.out.print(targetStateLabels + "\t");
+            }
+            System.out.println();
+        }
+    }
+    
 
     public static void main(String[] args) {
+        boolean verboseMode = true;
+        
+        // Check if the '-v' option is provided
+        if (args.length > 0 && args[0].equals("-v")) {
+            verboseMode = true;
+        }
+        
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -218,6 +303,14 @@ public class RegexEngine {
 
             //Build the NFA for the input
             State startState = buildNFA(input);
+
+            //if verboseMode is flagged, print transition table of NFA
+            if (verboseMode) {
+                printTransitionTable(startState);
+                
+
+            }
+            //if verboseMode is flagged, 
 
             System.out.println("Ready");
             while(scanner.hasNextLine()) {
